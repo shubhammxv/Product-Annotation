@@ -1,6 +1,3 @@
-# USAGE
-# python multi_object_tracking.py --video videos/soccer_01.mp4 --tracker csrt
-
 # import the necessary packages
 import pandas as pd
 import argparse
@@ -14,11 +11,11 @@ from shutil import copyfile
 version = 'v1'
 
 #CSV File of all the Session IDs to fetch Video Link
-videoIDs = pd.read_csv('/Users/shubham/Desktop/Niflr/VideoIds.csv')
-videoNumber = 175
+videoIDs = pd.read_csv('CSV_FILE_PATH')
+videoNumber = 175       #Starting Session ID of the Video
 
 
-while (videoNumber != 200):
+while (videoNumber != 200):      #Looping till Session ID in the CSV File
 	print("Opening New Video Stream:", videoNumber)
 	time.sleep(1)
 	ap = argparse.ArgumentParser()
@@ -41,7 +38,7 @@ while (videoNumber != 200):
 	frameTaken = 0
 
 	videoID = videoIDs.iloc[videoNumber].sessionId
-	videoLink = 'https://storage.googleapis.com/live-stream-niflr-prod/' + videoID + '/cam1.mp4'
+	videoLink = 'API_OF_VIDEO' + videoID + 'Extension'
 	videoStream = cv2.VideoCapture(videoLink)
 	print("Grabbed New Streaming Video")
 	print("\n")
@@ -89,11 +86,7 @@ while (videoNumber != 200):
 				frameTaken = frameTaken + 1
 			cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 255, 0), 2)
 		count = count+1
-
-		# show the output frame
 		
-		
-		# print(count)
 		cv2.imshow("Frame", frame)
 		keyStroke = cv2.waitKey(30) & 0xFF
 
@@ -110,9 +103,11 @@ while (videoNumber != 200):
 			trackers.add(tracker, frame, box)
 			print("\n")
 			trackedProduct = input("Enter Tracked Product Name: ")
-			directory = "/Users/shubham/Desktop/Niflr/Annotation-for-object-detectionin-videos-through-object-tracking/items/"+trackedProduct
+			directory = "DIRECTORY_OF_ANNOTATION"+trackedProduct
 			classes = trackedProduct
 			print("\n")
+			
+			#To Create a New Folder for Product based on Input if already Tracked Previously
 			flagg = input("Previously Tracked Product? ")
 			if flagg == "n" or flagg == "no" or flagg == "N" or flagg == "NO":
 				os.mkdir(directory)
@@ -129,16 +124,13 @@ while (videoNumber != 200):
 			print("\n")
 			videoStream.release()
 			break
-
+		#To Restart the Same Video
 		if (keyStroke == ord("r")):
 			videoStream = cv2.VideoCapture(videoLink)
 			print("Restarting the Same Video")
 			continue
-
-# if we are using a webcam, release the pointer
-
-# otherwise, release the file pointer
-
+			
+#To release File Pointer
 videoStream.release()
 
 # close all windows
