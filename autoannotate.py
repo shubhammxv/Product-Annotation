@@ -5,6 +5,11 @@ Load the CSV File of the Video IDs and run the script by following Command in th
 
 python (filename).py --tracker csrt
 
+Press "x" to skip the current Video
+Press "r" to restart the same video
+Press "c" to cancel the process
+Press "Enter" after making box to enter the tracked product details
+
 """
 
 # Import the necessary packages
@@ -20,14 +25,14 @@ from shutil import copyfile
 version = 'v1'
 
 # CSV File of all the Session IDs to fetch Video Link
-csvPath = '/Users/shubham/Desktop/Niflr/Annotation-for-object-detectionin-videos-through-object-tracking/CSV Files/Eggs.csv'
+csvPath = '/Users/shubham/Desktop/Niflr/Annotation-for-object-detectionin-videos-through-object-tracking/CSV Files/Doritos.csv'
 print(csvPath)
 videoIDs = pd.read_csv(csvPath)
-videoNumber = 0				   										# Initial Video Number in the file to Start From
+videoNumber = 20			   											# Initial Video Number in the file to Start From
 
 
-while (videoNumber != 50):      					   					# Please Choose No. of Videos to Play in one loop as per convenience
-	print("Opening New Video Stream:", videoNumber)    				# Track of the Current Video Number
+while (videoNumber != 30):      					   					# Please Choose No. of Videos to Play in one loop as per convenience
+	print("Opening New Video Stream:", videoNumber)    					# Track of the Current Video Number
 	time.sleep(1)
 	ap = argparse.ArgumentParser()
 
@@ -107,6 +112,9 @@ while (videoNumber != 50):      					   					# Please Choose No. of Videos to Pl
 			trackers.add(tracker, frame, box)
 			print("\n")
 			trackedProduct = input("Enter Tracked Product Name: ")
+
+			#Enter the directory Path where tracked objects are to be saved in the system
+
 			directory = "/Users/shubham/Desktop/Niflr/Annotation-for-object-detectionin-videos-through-object-tracking/items/"+trackedProduct
 			classes = trackedProduct
 			print("\n")
@@ -131,6 +139,15 @@ while (videoNumber != 50):      					   					# Please Choose No. of Videos to Pl
 			videoStream = cv2.VideoCapture(videoLink)
 			print("Restarting the Same Video")
 			continue
+
+		if (keyStroke == ord("x")):
+			videoNumber+=1
+			videoID = videoIDs.iloc[videoNumber].sessionId
+			videoLink = 'https://storage.googleapis.com/live-stream-niflr-prod/' + videoID + '/cam1.mp4'
+			videoStream = cv2.VideoCapture(videoLink)
+			print("Skipping Current Video and Opening New Video Stream:", videoNumber)
+			continue
+
 
 # Release the file pointer
 videoStream.release()
